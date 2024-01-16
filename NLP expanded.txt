@@ -1,0 +1,20 @@
+Macro Ideas Notes 
+
+
+when editing:
+
+1) make virtual copy
+2) colour different labels
+3) flag/no flag
+4) change zoom level
+5) opening and editing NLP
+6) sync NLP from img a to img b
+	a) hotkey for selecting img a
+	b) hotkey for selecting img b
+	c) hotkey for confirm
+7) hotkey for rotating
+8) cropping functionality
+9) undo
+10) navigating the filmstrip
+11) cancel/exit NLP editing window
+12) changing colour models
