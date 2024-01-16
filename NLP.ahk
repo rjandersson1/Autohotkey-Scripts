@@ -10,6 +10,8 @@
 ; Toggle shift to click variable
 toggle_shift_to_click := false
 
+global val_scaling := 1    ; NLP window setting adjustment scaling amount (1, 2, 3, 4, 5)
+
 ;_____________________________________________________________________________________________
 ;................................ Function Definition ........................................
 
@@ -89,6 +91,73 @@ dust_removal_click(on, down)
     }
 }
 
+; Cycles through the list of values in NLP (sends tab twice to cycle down, shift+tab twice to cycle back)
+list_move(val)
+{
+    if(val == "down")
+    {
+        Send, {tab}
+        Send, {tab}
+        return
+    }
+    if(val == "up")
+    {
+        Send, +{tab}
+        Send, +{tab}
+        return
+    }
+}
+
+; Changes currently selected value in NLP by the amount scale in direction (sends up/down arrow key 'x' times)
+change_value(direction, scale)
+{
+    if(direction == "plus")
+    {
+        Loop, %scale%
+        {
+            Send, {up}
+        }
+        return
+    }
+    if(direction == "minus")
+    {
+        Loop, %scale%
+        {
+            Send, {down}
+        }
+        return
+    }
+}
+
+rotate_image(direction)
+{
+    if(direction == "left")
+    {
+        Send, ^{]}
+        return
+    }
+    if(direction == "right")
+    {
+        Send, ^{[}
+        return
+    }
+}
+
+; Changes scaling factor for adjusting values in NLP. Toggles between fine adjustments (1) and large adjustments (5)
+change_value_scaling(val)
+{
+    ;max_scaling := 5
+    if(val == 5)
+    {
+        val_scaling := 1
+        return
+    }
+    if(val == 1)
+    {
+        val_scaling := 5
+        return
+    }
+}
 
 
 ;_____________________________________________________________________________________________
@@ -149,59 +218,54 @@ LShift Up::
     return
 }
 
-move(val)
+; Rotates image left
+]::
 {
-    if(val == 0)
-    {
-        Send, {tab}
-        Send, {tab}
-        return
-    }
-    if(val == 1)
-    {
-        Send, +{tab}
-        Send, +{tab}
-        return
-    }
+    rotate_image("left")
+    return
 }
 
-changeval(val)
+; Rotates image right
+[::
 {
-    if(val > 0)
-    {
-        Send, {up}
-        return
-    }
-    if(val < 0)
-    {
-        Send, {down}
-        return
-    }
+    rotate_image("right")
+    return
 }
 
+
+; NLP window active functions (only compiles if window is active)
 #IfWinActive ahk_class Afx:0000000140000000:0
+
+;_____________________________________________________________________________________________
+;.......................... Hotkey Definition in NLP Window....................................
+
+=::
+{
+    change_value_scaling(val_scaling)
+    return
+}
 
 [::
 {
-    changeval(1)
+    change_value("minus", val_scaling)
     return
 }
 
 ]::
 {
-    changeval(-1)
+    change_value("plus", val_scaling)
     return
 }
 
 '::
 {
-    move(1)
+    list_move("up")
     return
 }
 
 \::
 {
-    move(0)
+    list_move("down")
     return
 }
 #IfWinActive
