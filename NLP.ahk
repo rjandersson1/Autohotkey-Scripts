@@ -12,6 +12,8 @@ toggle_shift_to_click := false
 
 global val_scaling := 1    ; NLP window setting adjustment scaling amount (1, 2, 3, 4, 5)
 
+global NLP_pos := 1
+
 ;_____________________________________________________________________________________________
 ;................................ Function Definition ........................................
 
@@ -91,27 +93,144 @@ dust_removal_click(on, down)
     }
 }
 
+; List:
+; --- top ---
+; 1 = brightness
+; 2 = contrast
+; 3 = lights
+; 4 = darks
+; 5 = whites
+; 6 = blacks
+; --- skip ---
+; 7 = hue
+; 8 = strength
+; --- skip ---
+; 9 = color model
+; --- bottom ---
+
+
+
 ; Cycles through the list of values in NLP (sends tab twice to cycle down, shift+tab twice to cycle back)
-list_move(val)
+list_move(val, pos)
 {
     if(val == "down")
     {
-        Send, {tab}
-        Send, {tab}
+        if(pos < 6 || pos == 7)
+        {
+            list_increase(pos)
+            return
+        }
+        if(pos == 6)
+        {
+            list_goto_hue(pos)
+            return
+        }
+        if(pos == 8)
+        {
+            list_goto_color(pos)
+            return
+        }
+        if(pos == 9)
+        {
+            return
+        }
         return
     }
     if(val == "up")
     {
-        Send, +{tab}
-        Send, +{tab}
+        if(pos == 1)
+        {
+            return
+        }
+        if(pos > 1 && pos != 7 && pos != 9)
+        {
+            list_decrease(pos)
+            return
+        }
+        if(pos == 7)
+        {
+            list_goto_blacks(pos)
+            return
+        }
+        if(pos == 9)
+        {
+            list_goto_strength(pos)
+            return
+        }
         return
     }
+    return
 }
 
-; Changes currently selected value in NLP by the amount scale in direction (sends up/down arrow key 'x' times)
-change_value(direction, scale)
+list_increase(pos)
 {
-    if(direction == "plus")
+    Send, {tab}
+    Send, {tab}
+    NLP_pos := pos + 1
+    tooltip % (NLP_pos)
+    return
+}
+
+list_decrease(pos)
+{
+    Send, +{tab}
+    Send, +{tab}
+    NLP_pos := pos - 1
+    tooltip % (NLP_pos)
+    return
+}
+
+list_goto_hue(pos)
+{
+    ;MouseGetPos, x, y
+    MouseMove, 275, 460
+    Sleep, 10
+    Click
+    Click
+    ;MouseMove, x, y
+    NLP_pos := 7
+    tooltip % (NLP_pos)
+    return
+}
+
+list_goto_color(pos)
+{
+    loop, 4
+    {
+        Send, +{tab}
+    }
+    NLP_pos := 9
+    tooltip % (NLP_pos)
+    return
+}
+
+list_goto_strength(pos)
+{
+    loop, 4
+    {
+        Send, {tab}
+    }
+    NLP_pos := 8
+    tooltip % (NLP_pos)
+    return
+}
+
+list_goto_blacks(pos)
+{
+    loop, 7
+    {
+        Send, +{tab}
+    }
+    NLP_pos := 6
+    tooltip % (NLP_pos)
+    return
+}
+
+
+; Changes currently selected value in NLP by the amount scale in direction (sends up/down arrow key 'x' times)
+change_value(direction, scale, pos)
+{
+    if(direction == "plus" && pos != 9)
     {
         Loop, %scale%
         {
@@ -119,11 +238,25 @@ change_value(direction, scale)
         }
         return
     }
-    if(direction == "minus")
+    if(direction == "minus" && pos != 9)
     {
         Loop, %scale%
         {
             Send, {down}
+        }
+        return
+    }
+    if(pos == 9)    ; Case for when adjusting colour: ensure scaling does not affect selection
+    {
+        if(direction == "plus")
+        {
+            Send, {up}
+            return
+        }
+        if(direction == "minus")
+        {
+            Send, {down}
+            return
         }
         return
     }
@@ -207,12 +340,14 @@ LShift Up::
 }
 
 
-; [Ctrl + .] Opens NLP experimental
+; [Ctrl + /] Opens NLP experimental
 ^/::
 {
-    open_NLP()
-    MouseMove, 1875, 637
+    NLP_pos := 1            ; Sets menu position to 1 (brightness)
+    open_NLP()              ; Opens NLP window
     Sleep 750
+    MouseMove, 290, 154    ; Clicks on brightness value so that pressing tab cycles through menu
+    Sleep 100
     Click
     Sleep 100
     return
@@ -239,35 +374,48 @@ LShift Up::
 ;_____________________________________________________________________________________________
 ;.......................... Hotkey Definition in NLP Window....................................
 
+; Adjust NLP value adjustment scale (1x or 5x)
 =::
 {
     change_value_scaling(val_scaling)
     return
 }
 
+; Adjust NLP value (increase)
 [::
 {
-    change_value("minus", val_scaling)
+    change_value("minus", val_scaling, NLP_pos)
     return
 }
 
+; Adjust NLP value (decrease)
 ]::
 {
-    change_value("plus", val_scaling)
+    change_value("plus", val_scaling, NLP_pos)
     return
 }
 
+; Move through NLP menu (up)
 '::
 {
-    list_move("up")
+    list_move("up", NLP_pos)
     return
 }
 
+; Move through NLP menu (down)
 \::
 {
-    list_move("down")
+    list_move("down", NLP_pos)
+    return
+}
+
+; Apply NLP Settings
+Enter::
+{
+    MouseMove, 190, 637
+    Sleep 100
+    Click
     return
 }
 #IfWinActive
 #IfWinActive
-
