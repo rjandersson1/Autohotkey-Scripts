@@ -14,6 +14,8 @@ global val_scaling := 1    ; NLP window setting adjustment scaling amount (1, 2,
 
 global NLP_pos := 1
 
+SetMouseDelay, 0
+
 ;_____________________________________________________________________________________________
 ;................................ Function Definition ........................................
 
@@ -24,6 +26,8 @@ open_NLP()
     Send u              ; Select 'plug in extras...'
     Send {Right}        ; Open dropdown
     Send n              ; Select NLP
+    WinWaitActive ahk_class Afx:0000000140000000:0
+    tooltip % ("OPENED")
     return              ; End of function
 }
 
@@ -42,9 +46,9 @@ sync_photos()
     open_NLP()          ; Open NLP windo
     Sleep, 100        ; Wait for window to open
     MouseMove, 100, 550
-    Sleep 200
+    Sleep 10
     Click     ; Click on Sync Photos button
-    Sleep, 250        ; Delay to wait for mouse to move
+    Sleep, 100        ; Delay to wait for mouse to move
     Loop, 4             ; Press tab 4x to select 'apply'
     {
         Send, {tab}
@@ -107,8 +111,6 @@ dust_removal_click(on, down)
 ; --- skip ---
 ; 9 = color model
 ; --- bottom ---
-
-
 
 ; Cycles through the list of values in NLP (sends tab twice to cycle down, shift+tab twice to cycle back)
 list_move(val, pos)
@@ -292,6 +294,44 @@ change_value_scaling(val)
     }
 }
 
+create_virtual_copy()
+{
+    send, ^'
+    return
+}
+
+drag_view(direction)
+{
+    MouseGetPos, x, y
+    delay_mousedrag := 100
+    y_top := 175
+    y_bottom := 900
+    if(direction == "up")
+    {
+        Send, {q}
+        MouseMove, 900, y_top
+        Click, down, left
+        sleep, delay_mousedrag
+        MouseMove, 900, y_bottom
+        Click, up, left
+        MouseMove, x, y
+        Send, {q}
+        return
+    }
+    if(direction == "down")
+    {
+        Send, {q}
+        MouseMove, 900, y_bottom
+        Click, down, left
+        sleep, delay_mousedrag
+        MouseMove, 900, y_top
+        Click, up, left
+        MouseMove, x, y
+        Send, {q}
+        return
+    }
+}
+
 
 ;_____________________________________________________________________________________________
 ;................................ Hotkey Definition ..........................................
@@ -304,11 +344,24 @@ change_value_scaling(val)
 
 ; Press F1 to toggle shift to click
 F1::
+{
     toggle_shift_to_click := !toggle_shift_to_click
     Tooltip % (toggle_shift_to_click ? "ON" : "OFF")
     Sleep, 1000 ; Display tooltip for 1 second
     Tooltip
     return
+}
+
+q::
+{
+    Send, {q}
+    Sleep, 50
+    toggle_shift_to_click := !toggle_shift_to_click
+    ;Tooltip % (toggle_shift_to_click ? "ON" : "OFF")
+    ;Sleep, 1000 ; Display tooltip for 1 second
+    ;Tooltip
+    return
+}
 
 ; Press F2 to sync photo a to photo b
 ^.:: 
@@ -345,7 +398,7 @@ LShift Up::
 {
     NLP_pos := 1            ; Sets menu position to 1 (brightness)
     open_NLP()              ; Opens NLP window
-    Sleep 750
+    Sleep 300
     MouseMove, 290, 154    ; Clicks on brightness value so that pressing tab cycles through menu
     Sleep 100
     Click
@@ -356,6 +409,11 @@ LShift Up::
 ; Rotates image left
 ]::
 {
+    if(toggle_shift_to_click == 1)
+    {
+        send, ]
+        return
+    }
     rotate_image("left")
     return
 }
@@ -363,8 +421,50 @@ LShift Up::
 ; Rotates image right
 [::
 {
+    if(toggle_shift_to_click == 1)
+    {
+        send, [
+        return
+    }
     rotate_image("right")
     return
+}
+
+; Creates virtual copy
+-::
+{
+    create_virtual_copy()
+    return
+}
+
+; Drags view upwards
+w::
+{
+    if(toggle_shift_to_click == 1)
+    {
+        drag_view("up")
+        return
+    }
+    Else
+    {
+        Send, {w}
+        return
+    }
+}
+
+; Drags view from top to bottom
+s::
+{
+    if(toggle_shift_to_click == 1)
+    {
+        drag_view("down")
+        return
+    }
+    Else
+    {
+        Send, {s}
+        return
+    }
 }
 
 
@@ -414,6 +514,7 @@ Enter::
 {
     MouseMove, 190, 637
     Sleep 100
+    Click
     Click
     return
 }
