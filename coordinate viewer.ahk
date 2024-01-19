@@ -1,13 +1,15 @@
 toggle := 0
-; Press F1 to show coordinates in a popup window
+; Press F1 to show coordinates in a popup window and copy to clipboard
 F1::
 {
-MouseGetPos, x, y
-MsgBox, X: %x%, Y: %y%
-return
+    MouseGetPos, x, y
+    MsgBox, X: %x%, Y: %y%
+    Clipboard := "x = " x ", y = " y ; concatenate x and y with a comma
+    return
 }
 
-; Press F2 to toggle tooltip display of coordinates
+
+; Press F2 to toggle tooltip display of coordinates 
 F2::
 {
     if(!toggle)
@@ -26,6 +28,7 @@ F2::
             }
         }
     }
+    return
 }
 
 F3::

@@ -8,7 +8,7 @@
 
 
 ; Toggle shift to click variable
-toggle_shift_to_click := false
+global toggle_shift_to_click := false
 
 global val_scaling := 1    ; NLP window setting adjustment scaling amount (1, 2, 3, 4, 5)
 
@@ -300,36 +300,67 @@ create_virtual_copy()
     return
 }
 
+drag_view_hotkey(key)
+{
+    if(toggle_shift_to_click == 1)
+    {
+        direction := (key =="w") ? "up" : (key == "s") ? "down" : (key == "a") ? "left" : "right"
+        drag_view(direction)
+        return
+    }
+    Else
+    {
+        if GetkeyState("Shift", "P")
+        {
+            key := StringUpper, key, key
+        }
+        Send, {%key%}
+        return
+    }
+    Return
+}
+
 drag_view(direction)
 {
-    MouseGetPos, x, y
-    delay_mousedrag := 100
+    Local x1, x2, y1, y2   
+    
+    delay_mousedrag := 125
     y_top := 175
     y_bottom := 900
-    if(direction == "up")
+    y_center := 500
+    x_left := 275
+    x_right := 1000
+    x_center := 900
+    MouseGetPos, x, y
+    
+    if(direction == "left" || direction == "right")
     {
-        Send, {q}
-        MouseMove, 900, y_top
-        Click, down, left
-        sleep, delay_mousedrag
-        MouseMove, 900, y_bottom
-        Click, up, left
-        MouseMove, x, y
-        Send, {q}
-        return
+        x1 := (direction == "left") ? x_left : x_right
+        x2 := (direction == "left") ? x_right : x_left
+        y1 := y_center
+        y2 := y_center
     }
-    if(direction == "down")
+    else if(direction == "up" || direction == "down")
     {
-        Send, {q}
-        MouseMove, 900, y_bottom
-        Click, down, left
-        sleep, delay_mousedrag
-        MouseMove, 900, y_top
-        Click, up, left
-        MouseMove, x, y
-        Send, {q}
-        return
+        y1 := (direction == "up") ? y_top : y_bottom
+        y2 := (direction == "up") ? y_bottom : y_top
+        x1 := x_center
+        x2 := x_center
     }
+    Else
+    {
+        Return
+    }
+
+    Send, {q}
+    MouseMove, x1, y1
+    Click, down, left
+    sleep, delay_mousedrag
+    MouseMove, x2, y2
+    Click, up, left
+    MouseMove, x, y
+    Send, {q}
+    return
 }
 
 
@@ -437,35 +468,10 @@ LShift Up::
     return
 }
 
-; Drags view upwards
-w::
-{
-    if(toggle_shift_to_click == 1)
-    {
-        drag_view("up")
-        return
-    }
-    Else
-    {
-        Send, {w}
-        return
-    }
-}
-
-; Drags view from top to bottom
-s::
-{
-    if(toggle_shift_to_click == 1)
-    {
-        drag_view("down")
-        return
-    }
-    Else
-    {
-        Send, {s}
-        return
-    }
-}
+w::drag_view_hotkey("w")
+s::drag_view_hotkey("s")
+a::drag_view_hotkey("a")
+d::drag_view_hotkey("d")
 
 
 ; NLP window active functions (only compiles if window is active)
