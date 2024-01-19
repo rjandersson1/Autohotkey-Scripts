@@ -2,6 +2,8 @@
 ; Ensure display is at 1920x1200 @ 100% scaling
 ; Ensure web app is fullscreen display and scrolled to top
 
+SetMouseDelay, 0
+
 F2:: ;hotkey to run script
 While GetKeyState("F2", "P") ; Check if F2 is being held down
 
@@ -22,27 +24,33 @@ return ; end the hotkey when F2 is released
 
 F3:: ;hotkey to set label to unpaid uni
 {
+	MouseGetPos, x, y
 	Click
-    Click, 1029, 730 ;click on label dropdown
-    Click, 900, 830 ;click on unpaid uni
-	Click, 785, 870 ;save
+    	Click, 1029, 730 ;click on label dropdown
+    	Click, 900, 830 ;click on unpaid uni
+	Click, 793, 870 ;save
+	MouseMove, x, y
 	return
 }
 
 F4:: ;hotkey to set to unpaid other
 {
+	MouseGetPos, x, y
 	Click
-    Click, 1029, 730 ;click on label dropdown
-    Click, 900, 875 ;click on unpaid other
-	Click, 785, 870 ;save
+    	Click, 1029, 730 ;click on label dropdown
+    	Click, 900, 875 ;click on unpaid other
+	Click, 793, 870 ;save
+	MouseMove, x, y
 	return
 }
 
 F5:: ;hotkey to set label to me
 {
+	MouseGetPos, x, y
 	Click
     Click, 1029, 730 ;click on label dropdown
     Click, 900, 982 ;click on me
-	Click, 785, 870 ;save
+	Click, 793, 870 ;save
+	MouseMove, x, y
 	return
 }
