@@ -14,6 +14,9 @@ global val_scaling := 1    ; NLP window setting adjustment scaling amount (1, 2,
 
 global NLP_pos := 1
 
+Global active_window
+
+
 SetMouseDelay, 0
 
 ;_____________________________________________________________________________________________
@@ -27,7 +30,7 @@ open_NLP()
     Send {Right}        ; Open dropdown
     Send n              ; Select NLP
     WinWaitActive ahk_class Afx:0000000140000000:0
-    tooltip % ("OPENED")
+    active_window := "NLP"
     return              ; End of function
 }
 
@@ -35,6 +38,8 @@ open_metadata_time()
 {
     Send !m
     Send t
+    Send {tab}
+    active_window := "metadata"
     return
 }
 
@@ -363,7 +368,6 @@ drag_view(direction)
     return
 }
 
-
 ;_____________________________________________________________________________________________
 ;................................ Hotkey Definition ..........................................
 
@@ -371,6 +375,7 @@ drag_view(direction)
 ^,::
 {
     open_NLP()
+    Return
 }
 
 ; Press F1 to toggle shift to click
@@ -394,7 +399,7 @@ q::
     return
 }
 
-; Press F2 to sync photo a to photo b
+; Press Ctrl + . to sync photo a to photo b
 ^.:: 
 {
     sync_photos()
@@ -403,8 +408,8 @@ q::
     return
 }
 
-; Press F3 to edit capture capture time
-F3::
+; Press Ctrl + M to edit capture capture time
+^m::
 {
     open_metadata_time()
     return
@@ -434,6 +439,7 @@ LShift Up::
     Sleep 100
     Click
     Sleep 100
+    tooltip % (active_window)
     return
 }
 
@@ -475,8 +481,7 @@ d::drag_view_hotkey("d")
 
 
 ; NLP window active functions (only compiles if window is active)
-#IfWinActive ahk_class Afx:0000000140000000:0
-
+#If ((WinActive("ahk_class Afx:0000000140000000:0")) && (active_window == "NLP"))
 ;_____________________________________________________________________________________________
 ;.......................... Hotkey Definition in NLP Window....................................
 
@@ -524,5 +529,5 @@ Enter::
     Click
     return
 }
-#IfWinActive
+#If
 #IfWinActive
