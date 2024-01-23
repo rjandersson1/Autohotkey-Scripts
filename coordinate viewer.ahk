@@ -18,8 +18,9 @@ F2::
         toggle := 1
         while(toggle)
         {
+            WinGetClass, WinClass, A
             MouseGetPos, x, y
-            Tooltip % (x "," y)
+            Tooltip % (x "," y "," WinClass)
             if(GetKeyState("F2","P"))
             {
                 toggle := 0
