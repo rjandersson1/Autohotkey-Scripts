@@ -2,7 +2,7 @@
 ; Ensure display is at 1920x1200 @ 100% scaling
 ; Ensure web app is fullscreen display and scrolled to top
 
-SetMouseDelay, 0
+SetMouseDelay, 1
 
 F2:: ;hotkey to run script
 While GetKeyState("F2", "P") ; Check if F2 is being held down
