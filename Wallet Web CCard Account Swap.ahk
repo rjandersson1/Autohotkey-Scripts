@@ -2,11 +2,48 @@
 ; Ensure display is at 1920x1200 @ 100% scaling
 ; Ensure web app is fullscreen display and scrolled to top
 
-SetMouseDelay, 1
+; GUI Setup
+
+Gui, New, +AlwaysOnTop, Readme
+Gui, Add, Text,, List of hotkeys and corresponding functions:
+Gui, Add, Text,, F2: Transfers expense from import --> account. Click and hold to continously perform action.
+Gui, Add, Text,, F3: Sets expense label to "unpaid uni"
+Gui, Add, Text,, F4: Sets expense label to "unpaid other"
+Gui, Add, Text,, F5: Sets expense label to "me"
+Gui, Add, Text,, Set Mouse Delay:
+Gui, Add, Button, Default gMDelayInstant, Instant
+Gui, Add, Button, Default gMDelayFast, Fast
+Gui, Add, Button, Default gMDelaySlow, Slow
+Gui, Show, w500 h250, Readme
+
+Return
+
+Global mdelay
+
+MDelayInstant:
+{
+	mdelay := 0
+	Gui, Destroy
+	Return
+}
+
+MDelayFast:
+{
+	mdelay := 1
+	Gui, Destroy
+	Return
+}
+
+MDelaySlow:
+{
+	mdelay := 15
+	Gui, Destroy
+	Return
+}
 
 F2:: ;hotkey to run script
+SetMouseDelay, mdelay
 While GetKeyState("F2", "P") ; Check if F2 is being held down
-
 {
     Click, 850, 400 ;click on top expense
     Sleep, 0
@@ -23,34 +60,37 @@ return ; end the hotkey when F2 is released
 ;Click, 800, 830 ;select credit card account
 
 F3:: ;hotkey to set label to unpaid uni
+SetMouseDelay, mdelay
 {
 	MouseGetPos, x, y
 	Click
     	Click, 1029, 730 ;click on label dropdown
     	Click, 900, 830 ;click on unpaid uni
-	Click, 793, 870 ;save
+	Click, 785, 865 ;save
 	MouseMove, x, y
 	return
 }
 
 F4:: ;hotkey to set to unpaid other
+SetMouseDelay, mdelay
 {
 	MouseGetPos, x, y
 	Click
     	Click, 1029, 730 ;click on label dropdown
     	Click, 900, 875 ;click on unpaid other
-	Click, 793, 870 ;save
+	Click, 785, 865 ;save
 	MouseMove, x, y
 	return
 }
 
 F5:: ;hotkey to set label to me
+SetMouseDelay, mdelay
 {
 	MouseGetPos, x, y
 	Click
     Click, 1029, 730 ;click on label dropdown
     Click, 900, 982 ;click on me
-	Click, 793, 870 ;save
+	Click, 785, 865 ;save
 	MouseMove, x, y
 	return
 }
