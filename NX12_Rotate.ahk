@@ -7,8 +7,8 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 #if (getkeystate("capslock", "t"))
 {
-    ;^LButton::MButton  ; Change Alt + Left Click to Middle Click
-    ^LButton::MButton  ; Change Ctrl + Left Click to Right Click
+    !LButton::MButton  ; Change Alt + Left Click to Middle Click
+    ;^LButton::MButton  ; Change Ctrl + Left Click to Right Click
     +LButton::MButton  ; Change Shift + Left Click to Middle Click
 }
 #if
