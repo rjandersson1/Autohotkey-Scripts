@@ -66,7 +66,7 @@ SetMouseDelay, mdelay
 	Click
     	Click, 1029, 730 ;click on label dropdown
     	Click, 900, 830 ;click on unpaid uni
-	Click, 785, 865 ;save
+	Click, 790, 865 ;save
 	MouseMove, x, y
 	return
 }
@@ -78,7 +78,7 @@ SetMouseDelay, mdelay
 	Click
     	Click, 1029, 730 ;click on label dropdown
     	Click, 900, 875 ;click on unpaid other
-	Click, 785, 865 ;save
+	Click, 790, 865 ;save
 	MouseMove, x, y
 	return
 }
@@ -90,7 +90,7 @@ SetMouseDelay, mdelay
 	Click
     Click, 1029, 730 ;click on label dropdown
     Click, 900, 982 ;click on me
-	Click, 785, 865 ;save
+	Click, 790, 865 ;save
 	MouseMove, x, y
 	return
 }

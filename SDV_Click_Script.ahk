@@ -1,4 +1,4 @@
-;#IfWinActive, ahk_class SDL_app
+#IfWinActive, ahk_class SDL_app
 ; Initialize toggle variables
 tc := false
 th := false
@@ -114,14 +114,14 @@ sclick(m)
 	}
 }
 
-attack()
+attack() ;x = 982, y = 611
 {
 	Send, {blind}{9 down}
 	Sleep, 10
 	Send, {blind}{9 up}
 	Sleep, 100
 	Click, Right
-	Loop, 13
+	Loop, 7
 	{
 		Click
 	}
@@ -223,4 +223,4 @@ esc Up::
 	Send, {Esc Up}
 }
 
-;#IfWinActive
+#IfWinActive 

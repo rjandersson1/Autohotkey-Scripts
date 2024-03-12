@@ -328,7 +328,7 @@ drag_view_hotkey(key)
 drag_view(direction)
 {
     Local x1, x2, y1, y2   
-    
+    SetMouseDelay, 1
     delay_mousedrag := 125
     y_top := 175
     y_bottom := 900
@@ -363,7 +363,7 @@ drag_view(direction)
     sleep, delay_mousedrag
     MouseMove, x2, y2
     Click, up, left
-    MouseMove, x, y
+    ;MouseMove, x, y
     Send, {q}
     return
 }
