@@ -55,3 +55,10 @@ F3::
     ; Copy the process name to the clipboard if needed
     return
 }
+
+F4::
+{
+    MouseGetPos, x, y
+    Clipboard := (x " " y)
+    return
+}
