@@ -41,6 +41,14 @@ MDelaySlow:
 	Return
 }
 
+saveLabel() {
+	Loop, 4             ; Press tab 4x to select 'apply'
+    {
+        Send, {tab}
+    }
+	Send, {enter}
+}
+
 F2:: ;hotkey to run script
 SetMouseDelay, mdelay
 While GetKeyState("F2", "P") ; Check if F2 is being held down
@@ -66,7 +74,9 @@ SetMouseDelay, mdelay
 	Click
     	Click, 1029, 730 ;click on label dropdown
     	Click, 900, 830 ;click on unpaid uni
-	Click, 790, 865 ;save
+	;Click, 790, 865 ;save
+	;Click, 785, 867 ;save
+	saveLabel()
 	MouseMove, x, y
 	return
 }
@@ -78,7 +88,9 @@ SetMouseDelay, mdelay
 	Click
     	Click, 1029, 730 ;click on label dropdown
     	Click, 900, 875 ;click on unpaid other
-	Click, 790, 865 ;save
+	;Click, 790, 865 ;save
+	;Click, 785, 867 ;save
+	saveLabel()
 	MouseMove, x, y
 	return
 }
@@ -90,7 +102,31 @@ SetMouseDelay, mdelay
 	Click
     Click, 1029, 730 ;click on label dropdown
     Click, 900, 982 ;click on me
-	Click, 790, 865 ;save
+	;Click, 790, 865 ;save
+	;Click, 785, 867 ;save
+	saveLabel()
 	MouseMove, x, y
+	return
+}
+
+F6:: ; Hotkey to remove all labels
+SetMouseDelay, mdelay
+{
+	MouseGetPos, x, y
+	Click
+    Click, 1020, 722 ;click on label dropdown
+	Loop, 4             ; Press backspace 4x to remove labels
+    {
+        Send, {BackSpace}
+    }
+	saveLabel()
+	MouseMove, x, y
+	return
+}
+
+F7:: ; Shift Up
+{
+	MouseGetPos, x, y
+	MouseMove, x, y-73
 	return
 }
